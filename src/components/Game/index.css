@@ -1,0 +1,52 @@
+.Game {
+    font-size: 20px;
+}
+
+select, input, button {
+    font-size: 20px;
+}
+
+label {
+    font-size: 18px;
+}
+
+input {
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 30px;
+}
+
+.word-length {
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.number-of-guesses {
+    float: right;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.length-shower {
+    padding-top: 100px;
+}
+
+.trials-left {
+    margin-top: 10px;
+}
+
+.char-row {
+    margin: 10px 0px;
+}
+
+.char-box {
+    font-size: 25px;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0px 5px;
+    margin: 0px 3px;
+    color: white;
+}
+
+.guess {
+    margin-top: 20px;
+}
