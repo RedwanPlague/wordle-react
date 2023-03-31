@@ -12,7 +12,6 @@ label {
 
 input {
     font-family: 'Courier New', Courier, monospace;
-    margin-bottom: 30px;
 }
 
 .word-length {
@@ -35,6 +34,20 @@ input {
     margin-top: 10px;
 }
 
+.input-message {
+    color: red;
+    font-size: 15px;
+}
+
+.reveal {
+    margin-bottom: 10px;
+}
+
+.reveal .word {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
 .char-row {
     margin: 10px 0px;
 }
@@ -48,5 +61,5 @@ input {
 }
 
 .guess {
-    margin-top: 20px;
+    margin-top: 15px;
 }

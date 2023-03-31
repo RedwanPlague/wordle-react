@@ -13,7 +13,6 @@ const getRandomLength = () => {
 const getRandomWord = (length: number = 0) => {
   if (length === 0) {
     length = getRandomLength();
-    console.log(length);
   }
   const targets = words[length];
   return targets[Math.floor(Math.random() * targets.length)];

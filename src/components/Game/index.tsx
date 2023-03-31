@@ -43,7 +43,6 @@ function Game() {
 
   const generateWordToGuess = useCallback(() => {
     const newWordToGuess = getRandomWord(wordLength);
-    console.log(newWordToGuess);
     setWordToGuess(newWordToGuess);
     setCurrentGuess("");
     setPreviousGuesses([]);
@@ -99,6 +98,19 @@ function Game() {
         </select>
       </div>
     );
+  };
+
+  const renderInputMessage = () => {
+    if (currentGuess.length < wordToGuess.length) {
+      return <span style={{ visibility: "hidden" }}>Too short</span>;
+    }
+    if (!isWordValid(currentGuess)) {
+      return <span>Unrecognized word</span>;
+    }
+    if (previousGuesses.includes(currentGuess)) {
+      return <span>Already guessed this word</span>;
+    }
+    return <span style={{ visibility: "hidden" }}>Valid guess</span>;
   };
 
   const gameFinished = () => {
@@ -162,16 +174,24 @@ function Game() {
           ? "infinite"
           : Math.max(0, numberOfGuesses - previousGuesses.length)}
       </div>
-      <input
-        className="guess"
-        value={currentGuess}
-        onChange={(event) => handleTypeGuess(event.target.value)}
-        onKeyDown={(event) => handleKeyPress(event.key)}
-        disabled={gameFinished()}
-      ></input>
-      <button onClick={() => handleConfirmGuess()} disabled={!isGuessValid()}>
-        Guess
-      </button>
+      <div className="guess">
+        <input
+          value={currentGuess}
+          onChange={(event) => handleTypeGuess(event.target.value)}
+          onKeyDown={(event) => handleKeyPress(event.key)}
+          disabled={gameFinished()}
+        ></input>
+        <button onClick={() => handleConfirmGuess()} disabled={!isGuessValid()}>
+          Guess
+        </button>
+        <div className="input-message">{renderInputMessage()}</div>
+      </div>
+      <div
+        className="reveal"
+        style={{ visibility: gameFinished() ? "visible" : "hidden" }}
+      >
+        The word was: <span className="word">{wordToGuess}</span>
+      </div>
       <div>
         {previousGuesses
           .slice()
