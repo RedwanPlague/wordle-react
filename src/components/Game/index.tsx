@@ -122,7 +122,7 @@ function Game() {
 
   const handleTypeGuess = (guess: string) => {
     if (guess.length <= wordToGuess.length) {
-      setCurrentGuess(guess);
+      setCurrentGuess(guess.toLocaleLowerCase());
     }
   };
 
