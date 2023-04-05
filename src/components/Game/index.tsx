@@ -32,6 +32,19 @@ for (let i = MinNumberOfGuesses; i <= MaxNumberOfGuesses; i++) {
   numberOfGuessesOptions.push({ label: `${i}`, value: i });
 }
 
+const unfoundCharactersWithIndex = (
+  wordToGuess: string,
+  guessedWords: string[]
+) => {
+  return wordToGuess
+    .split("")
+    .map((ch: string, index: number) => ({ ch, index }))
+    .filter(
+      ({ ch, index }) =>
+        !guessedWords.some((guessedWord) => guessedWord.at(index) === ch)
+    );
+};
+
 const Guesser = ({ wordLength, numberOfGuesses }: GuesserProps) => {
   const [wordToGuess, setWordToGuess] = useState<string>(
     getRandomWord(wordLength)
@@ -44,6 +57,27 @@ const Guesser = ({ wordLength, numberOfGuesses }: GuesserProps) => {
     setPreviousGuesses([]);
     setCurrentGuess("");
   }, []);
+
+  const unfoundCharsWithIndex = unfoundCharactersWithIndex(
+    wordToGuess,
+    previousGuesses
+  );
+
+  const canGiveHint = () => {
+    return unfoundCharsWithIndex.length > 0;
+  };
+
+  const giveHint = () => {
+    if (canGiveHint()) {
+      const randomIndex = Math.floor(
+        Math.random() * unfoundCharsWithIndex.length
+      );
+      const { ch, index } = unfoundCharsWithIndex[randomIndex];
+      let hintGuess =
+        "?".repeat(index) + ch + "?".repeat(wordToGuess.length - index - 1);
+      setPreviousGuesses([...previousGuesses, hintGuess]);
+    }
+  };
 
   const renderInputMessage = () => {
     if (currentGuess.length < wordToGuess.length) {
@@ -110,6 +144,10 @@ const Guesser = ({ wordLength, numberOfGuesses }: GuesserProps) => {
       <div className="length-shower">
         Guess a {wordToGuess.length} letter word &nbsp;
         <button onClick={() => reset()}>Regenerate</button>
+        &nbsp;
+        <button onClick={() => giveHint()} disabled={!canGiveHint()}>
+          Hint
+        </button>
       </div>
       <div className="trials-left">
         Trials left:{" "}
