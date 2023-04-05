@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./index.css";
 
 import {
@@ -11,6 +11,11 @@ import {
 type Option = {
   label: string;
   value: number;
+};
+
+type GuesserProps = {
+  wordLength: number;
+  numberOfGuesses: number;
 };
 
 const wordLengthOptions: Option[] = [{ label: "random", value: 0 }];
@@ -27,78 +32,18 @@ for (let i = MinNumberOfGuesses; i <= MaxNumberOfGuesses; i++) {
   numberOfGuessesOptions.push({ label: `${i}`, value: i });
 }
 
-function Game() {
-  const [wordLength, setWordLength] = useState<number>(
-    wordLengthOptions[0].value
+const Guesser = ({ wordLength, numberOfGuesses }: GuesserProps) => {
+  const [wordToGuess, setWordToGuess] = useState<string>(
+    getRandomWord(wordLength)
   );
-
-  const [wordToGuess, setWordToGuess] = useState<string>("");
-
-  const [numberOfGuesses, setNumberOfGuesses] = useState<number>(
-    DefaultNumberOfGuesses
-  );
-
   const [previousGuesses, setPreviousGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>("");
 
-  const generateWordToGuess = useCallback(() => {
-    const newWordToGuess = getRandomWord(wordLength);
-    setWordToGuess(newWordToGuess);
-    setCurrentGuess("");
+  const reset = useCallback(() => {
+    setWordToGuess(getRandomWord(wordLength));
     setPreviousGuesses([]);
-  }, [wordLength]);
-
-  useEffect(() => {
-    generateWordToGuess();
-  }, [generateWordToGuess]);
-
-  const handleWordLengthChange = (selectedValue: number) => {
-    setWordLength(selectedValue);
-  };
-
-  const handleNumberOfGuessesChange = (selectedValue: number) => {
-    setNumberOfGuesses(selectedValue);
-  };
-
-  const renderWordLengthSelector = () => {
-    return (
-      <div className="word-length">
-        <div>
-          <label>Word length: </label>
-        </div>
-        <select
-          value={wordLength}
-          onChange={(event) => handleWordLengthChange(+event.target.value)}
-        >
-          {wordLengthOptions.map((option) => (
-            <option value={option.value} key={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
-
-  const renderNumberOfGuessesSelector = () => {
-    return (
-      <div className="number-of-guesses">
-        <div>
-          <label>Number of guesses: </label>
-        </div>
-        <select
-          value={numberOfGuesses}
-          onChange={(event) => handleNumberOfGuessesChange(+event.target.value)}
-        >
-          {numberOfGuessesOptions.map((option) => (
-            <option value={option.value} key={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
+    setCurrentGuess("");
+  }, []);
 
   const renderInputMessage = () => {
     if (currentGuess.length < wordToGuess.length) {
@@ -161,12 +106,10 @@ function Game() {
   };
 
   return (
-    <div className="Game">
-      <div>{renderWordLengthSelector()}</div>
-      <div>{renderNumberOfGuessesSelector()}</div>
+    <div>
       <div className="length-shower">
         Guess a {wordToGuess.length} letter word &nbsp;
-        <button onClick={() => generateWordToGuess()}>Regenerate</button>
+        <button onClick={() => reset()}>Regenerate</button>
       </div>
       <div className="trials-left">
         Trials left:{" "}
@@ -212,6 +155,67 @@ function Game() {
       </div>
     </div>
   );
-}
+};
+
+const Game = () => {
+  const [wordLength, setWordLength] = useState<number>(
+    wordLengthOptions[0].value
+  );
+  const [numberOfGuesses, setNumberOfGuesses] = useState<number>(
+    DefaultNumberOfGuesses
+  );
+
+  const renderWordLengthSelector = () => {
+    return (
+      <div className="word-length">
+        <div>
+          <label>Word length: </label>
+        </div>
+        <select
+          value={wordLength}
+          onChange={(event) => setWordLength(+event.target.value)}
+        >
+          {wordLengthOptions.map((option) => (
+            <option value={option.value} key={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
+  const renderNumberOfGuessesSelector = () => {
+    return (
+      <div className="number-of-guesses">
+        <div>
+          <label>Number of guesses: </label>
+        </div>
+        <select
+          value={numberOfGuesses}
+          onChange={(event) => setNumberOfGuesses(+event.target.value)}
+        >
+          {numberOfGuessesOptions.map((option) => (
+            <option value={option.value} key={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
+  return (
+    <div className="Game">
+      {renderWordLengthSelector()}
+      {renderNumberOfGuessesSelector()}
+      <Guesser
+        wordLength={wordLength}
+        numberOfGuesses={numberOfGuesses}
+        key={wordLength}
+      />
+    </div>
+  );
+};
 
 export default Game;
